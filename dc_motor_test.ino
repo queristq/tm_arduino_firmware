@@ -18,21 +18,21 @@ void setup() {
   digitalWrite(m2_c1, LOW);
   digitalWrite(m2_c2, LOW);  
 
-  Serial.begin(9600);           // set up Serial library at 9600 bps
-  Serial.println("0");  // prints hello with ending line break 
+  Serial.begin(57600);           // set up Serial library at 9600 bps
+  Serial.println("Hello Arduino Code is starting");  // prints hello with ending line break 
 }
 
 void RightWheelVel(int v)  // v needs to be between -255 to 255
 {
   if (v>0)
   {
-    analogWrite(m1_c1, v); 
-    digitalWrite(m1_c2, LOW);
+    digitalWrite(m1_c1, LOW); 
+    analogWrite(m1_c2, v);
   }
   else
   {
-    digitalWrite(m1_c1, LOW);  
-    analogWrite(m1_c2, -v); 
+    analogWrite(m1_c1, -v);  
+    digitalWrite(m1_c2, LOW); 
   }
 }
 
@@ -40,13 +40,13 @@ void LeftWheelVel(int v)  // v needs to be between -255 to 255
 {
   if (v>0)
   {
-    digitalWrite(m2_c1, LOW);
-    analogWrite(m2_c2, v); 
+    analogWrite(m2_c1, v);
+    digitalWrite(m2_c2, LOW); 
   }
   else
   {
-    analogWrite(m2_c1, -v); 
-    digitalWrite(m2_c2, LOW);  
+    digitalWrite(m2_c1, LOW); 
+    analogWrite(m2_c2, -v);  
   }   
 }
 
@@ -63,13 +63,10 @@ void loop() {
   int right_v = 0;
   int cmd = incomingByte - 48;
   
-  for(i=0;i<6000;i++){
-    {
-//      int left_v = (int)(255.0* sin(2.0*3.14*i/3000.0));
-//      int right_v = (int)(255.0* sin(2.0*3.14*i/3000.0));
-  switch (cmd) {
+  switch (cmd) 
+  {
     case 7:    // your hand is on the sensor
-      left_v = 128;
+      left_v = 50;
       right_v = 255;
       break;
     case 8:    // your hand is on the sensor
@@ -78,10 +75,10 @@ void loop() {
       break;
     case 9:    // your hand is on the sensor
       left_v = 255;
-      right_v = 128;
+      right_v = 50;
       break;
     case 4:    // your hand is on the sensor
-      left_v = 0;
+      left_v = -255;
       right_v = 255;
       break;
     case 5:    // your hand is on the sensor
@@ -90,25 +87,30 @@ void loop() {
       break;
     case 6:    // your hand is on the sensor
       left_v = 255;
-      right_v = 0;
+      right_v = -255;
       break;
-
-  }
-      WheelVel(left_v, right_v);
-//      Serial.print(left_v);  // prints hello with ending line break 
-//      Serial.print(" ");
-//      Serial.print(right_v);  // prints hello with ending line break 
-//      Serial.print("\n");
-      delay(d);
-      if (Serial.available() > 0) {
-        // read the incoming byte:
-        incomingByte = Serial.read();
-    
-        // say what you got:
-        Serial.print("I received: ");
-        Serial.println(incomingByte, DEC);
-      }
-    }
+    case 1:    // your hand is on the sensor
+      left_v = -50;
+      right_v = -255;
+      break;
+    case 2:    // your hand is on the sensor
+      left_v = -255;
+      right_v = -255;
+      break;
+    case 3:    // your hand is on the sensor
+      left_v = -255;
+      right_v = -50;
+      break;
   }
 
+  WheelVel(left_v, right_v);
+  if (Serial.available() > 0) 
+  {
+    // read the incoming byte:
+    incomingByte = Serial.read();
+
+    // say what you got:
+    Serial.print("I received: ");
+    Serial.println(incomingByte, DEC);
+  }
 }
